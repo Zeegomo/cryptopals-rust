@@ -92,5 +92,5 @@ pub fn get_score(xor: &Vec<u8>) -> u32 {
 		return 0;
 	}
 
-	xor.iter().map(|b| frequency.get(b).unwrap_or(&0)).sum()
+	xor.iter().map(|b| frequency.get(&b.to_ascii_lowercase()).unwrap_or(&0)).sum()
 }
