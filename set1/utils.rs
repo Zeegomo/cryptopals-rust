@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::prelude::*;
+use std::collections::HashMap;
 
 pub fn lines_from_file(filename: &str) -> Vec<String> {
     let mut file = match File::open(filename) {
@@ -68,59 +69,28 @@ pub fn hex_to_bytes(string: &str) -> Vec<u8> {
 
 
 pub fn get_score(xor: &Vec<u8>) -> u32 {
-    let mut score = 0;
+	let frequency: HashMap<u8, u32> = [
+		(b'a', 8),
+		(b'e', 12),
+		(b'h', 6),
+		(b'i', 7),
+		(b'n', 7),
+		(b'o', 8),
+		(b't', 8),
+		(b's', 6),
+		(b'r', 6),
+		(b'd', 4),
+		(b'l', 4),
+		(b'c', 3),
+		(b'u', 3),
+		(b' ', 12),
+	]
+	.iter().cloned().collect();
 
-    for n in 0..xor.len() {
+	// Check if there are only ASCII values
+	if xor.len() == 0 || !xor.iter().all(|c| c < &127) {
+		return 0;
+	}
 
-        if xor[n] == ("a").as_bytes()[0] || xor[n] == ("A").as_bytes()[0] {
-            score += 8;
-        }
-        if xor[n] == ("e").as_bytes()[0] || xor[n] == ("E").as_bytes()[0] {
-            score += 12;
-        }
-        if xor[n] == ("h").as_bytes()[0] || xor[n] == ("H").as_bytes()[0] {
-            score += 6;
-        }
-        if xor[n] == ("i").as_bytes()[0] || xor[n] == ("I").as_bytes()[0] {
-            score += 7;
-        }
-        if xor[n] == ("n").as_bytes()[0] || xor[n] == ("N").as_bytes()[0] {
-            score += 7;
-        }
-        if xor[n] == ("o").as_bytes()[0] || xor[n] == ("O").as_bytes()[0] {
-            score += 8;
-        }
-        if xor[n] == ("t").as_bytes()[0] || xor[n] == ("T").as_bytes()[0] {
-            score += 8;
-        }
-        if xor[n] == ("s").as_bytes()[0] || xor[n] == ("S").as_bytes()[0] {
-            score += 6;
-        }
-        if xor[n] == ("r").as_bytes()[0] || xor[n] == ("R").as_bytes()[0] {
-            score += 6;
-        }
-        if xor[n] == ("d").as_bytes()[0] || xor[n] == ("D").as_bytes()[0] {
-            score += 4;
-        }
-        if xor[n] == ("l").as_bytes()[0] || xor[n] == ("L").as_bytes()[0] {
-            score += 4;
-        }
-        if xor[n] == ("c").as_bytes()[0] || xor[n] == ("C").as_bytes()[0] {
-            score += 3;
-        }
-        if xor[n] == ("u").as_bytes()[0] || xor[n] == ("U").as_bytes()[0] {
-            score += 3;
-        }
-        if xor[n] == (" ").as_bytes()[0] {
-            score += 12;
-        }
-    }
-
-    for n in 0..xor.len() {
-        if xor[n] > 127 {
-            score = 0;
-        }
-    }
-
-    score
+	xor.iter().map(|b| frequency.get(b).unwrap_or(&0)).sum()
 }
