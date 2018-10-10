@@ -48,11 +48,7 @@ pub fn get_text_from_file(filename: &str) -> Vec<u8>{
 }
 
 pub fn single_byte_xor(string: &[u8], key: u8) -> Vec<u8> {
-    let mut bytes = Vec::new();
-    for mut i in 0..string.len() {
-        bytes.push(string[i] ^ key);
-    }
-    bytes
+    string.iter().map(| x | x ^ key).collect()
 }
 
 pub fn hex_to_bytes(string: &str) -> Vec<u8> {
